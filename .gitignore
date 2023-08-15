@@ -2,4 +2,4 @@ app/static/node_modules
 error.log
 uploads/profiles/
 uploads/tests/
-app/status/package-lock.json
+app/static/package-lock.json
