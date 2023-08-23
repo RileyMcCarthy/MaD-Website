@@ -17,8 +17,8 @@ if __name__ == "__main__":
     data_rate = 0.2
     status_rate = 0.5
     serial_port = "/dev/serial0"
-    serial_baud=9600
-    server_port = 5001
+    serial_baud = 115200
+    server_port = 5000
     config = configparser.ConfigParser()
     config.read('config.ini')
     if "SERVER_PORT" in config['DEFAULT']:
@@ -37,8 +37,6 @@ if __name__ == "__main__":
         socketio.start_background_task(data_thread, data_rate)
         socketio.run(app,
                      port=server_port,
-                     host="0.0.0.0",
-                     debug=True,
-                     use_reloader=False)
+                     host="0.0.0.0")
     except KeyboardInterrupt:
         pass

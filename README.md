@@ -8,17 +8,18 @@ Go to Interface Options:
 - Enable VNC (Optional)
 - Disable Serial Console (Important!)
 
-!!! On Raspberry pi 4 disable Serial Console, this uses the serial port for logging into the device
+!!! On Raspberry Pi 4 disable Serial Console, this uses the serial port for logging into the device
 
 ## Install and update packages
 
 ```
 sudo apt-get update
-sudo apt-get upgradesudo apt-get install -y libhdf5-dev libhdf5-serial-dev python3-pyqt5 libatlas-base-dev libjasper-dev
+sudo apt-get upgrade
+sudo apt-get install -y libhdf5-dev libhdf5-serial-dev python3-pyqt5 libatlas-base-dev libjasper-dev
 sudo apt-get install libmemcached-dev zlib1g-dev
 ```
 
-## Install Website Dependecies
+## Install Website Dependencies
 
 Will need to have or install NodeJS and NPM
 
@@ -33,13 +34,19 @@ Next inside the repo folder run:
 
 `make install'
 
-This will install website dependancies for flask and javascript
+This will install website dependencies for Flask and Javascript
+
+# Install Website Docker
+
+You must have Docker installed!
+
+For raspberry pi see: https://raspberrytips.com/docker-on-raspberry-pi/
 
 # Run web GUI
 
-`sudo make run 
+`sudo make run`
 
-# this will run the flask-socketio webpage that we will use to interact with the RPI`
+This will run the Flask-Socketio webpage that we will use to interact with the RPI`
 
 # Usage
 
