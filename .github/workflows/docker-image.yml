@@ -29,4 +29,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64, linux/arm32/v5, linux/arm32/v6, linux/arm32/v7, linux/riscv64, linux/i386
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/mad_website:nightly
