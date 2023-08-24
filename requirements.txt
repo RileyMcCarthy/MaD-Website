@@ -1,7 +1,6 @@
-flask_socketio
-pyserial
-numpy
-opencv-python
-opencv-contrib-python
-eventlet
-gunicorn
+flask_socketio==5.3.5
+pyserial==3.5
+numpy==1.25.2
+opencv-contrib-python==3.4.18.65
+eventlet==0.33.3
+gunicorn==21.2.0

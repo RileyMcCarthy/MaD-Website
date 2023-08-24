@@ -14,6 +14,9 @@ RUN apt update && apt install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrende
 # Install npm
 RUN apt-get update && apt-get install -y nodejs npm
 
+# Install cake for opencv
+RUN apt-get install cmake
+
 # Create Python Venv and Install Requirements
 RUN python3 -m venv venv
 RUN venv/bin/pip install --upgrade pip

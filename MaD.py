@@ -1,4 +1,4 @@
-from app import app, socketio, serial_thread, state_thread, data_thread
+from app import app, socketio
 import subprocess
 import logging
 @app.route("/restart")
@@ -13,7 +13,7 @@ def shutdown():
 
 if __name__ == "__main__":
     try:
-        socketio.run(app,
+        socketio.run(app, debug=True,
                         port=5000,
                         host="0.0.0.0")
     except KeyboardInterrupt:

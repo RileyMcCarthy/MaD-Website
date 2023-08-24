@@ -2,147 +2,131 @@
 {% block title %}Status{% endblock %}
 {% block content %}
 <div class="container my-3">
-    <div class="row">
-        <div class="col-xl-4">
-            <div class="row-xl mb-3">
-                <div class="shadow p-3 bg-white rounded">
-                    <div class="container" id="machineState">
-                        {% macro display_header(header,id) %}
-                        <div class="row">
-                            <h3 class="text-primary" json-id="{{id}}">{{header}}</h3>
-                        </div>
-                        {% endmacro %}
-                        {% macro display_boolean(label,id) %}
-                        <div class="row d-flex">
-                            <div class="col-8">
-                                <h5>{{label}}</h5>
-                            </div>
-                            <div class="col">
-                                <div class="ml-auto align-middle">
-                                    <i json-id="{{id}}"class="bi-x-square"></i>
-                                </div>
-                            </div>
-                        </div>
-                        {% endmacro %}
-                        {% macro display_value(label,id) %}
-                        <div class="row d-flex">
-                            <div class="col">
-                                <h5>{{label}}</h5>
-                            </div>
-                            <div class="col ml-auto">
-                                <span type="text" json-id="{{id}}" class="align-middle"></span>
-                            </div>
-                        </div>
-                        {% endmacro %}
-                        {% macro display_button(label,id, func, class) %}
-                        <div class="row d-flex">
-                            <div class="col">
-                                <h5>{{label}}</h5>
-                            </div>
-                            <div class="col ml-auto">
-                                <button type="button" json-id="{{id}}" class="btn {{class}}" onclick={{func}}></button>
-                            </div>
-                        </div>
-                        {% endmacro %}
-                        {{display_header("Self check","selfCheckParameters")}}
-                        {{display_boolean("Charge Pump","chargePump")}}
-
-                        {{display_header("Machine Check","machineCheckParameters")}}
-                        {{display_value("ESD Chain","esdChain")}}
-                        {{display_boolean("Servo Ready","servoOK")}}
-                        {{display_boolean("Force Comm","forceGaugeCom")}}
-                        {{display_boolean("Servo Comm","servoCom")}}
-
-                        {{display_header("Motion","motionParameters")}}
-                        {{display_value("Status","status")}}
-                        {{display_value("Condition","condition")}}
-                        {{display_value("Mode","mode")}}
-                        {{display_value("","Run")}}
+    <div class="row shadow p-3 mb-3 bg-white rounded">
+        <div class="container" id="machineState">
+            {% macro display_header(header,id) %}
+            <div class="row">
+                <h3 class="text-primary" json-id="{{id}}">{{header}}</h3>
+            </div>
+            {% endmacro %}
+            {% macro display_boolean(label,id) %}
+            <div class="row d-flex">
+                <div class="col-8">
+                    <h5>{{label}}</h5>
+                </div>
+                <div class="col">
+                    <div class="ml-auto text-center align-middle">
+                        <i json-id="{{id}}" class="bi-x-square"></i>
                     </div>
                 </div>
             </div>
-            <div class="row-xl shadow p-3 mb-3 bg-white rounded">
-                <div class="row-xl">
-                    <div class="row-xl">
-                        <div class="col text-center">
-                            <h3>Control</h3>
-                            <button onclick=toggleStatus()>Toggle Status</button>
-                            <button onclick=toggleMode()>Toggle Mode</button>
-                            <button onclick=run()>Run Test</button>
-                            <button onclick=set_gauge_length()>Zero Length</button>
-                            <button onclick=set_gauge_force()>Zero Force</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <h2>Setup Test</h2>
-                        <form id="setup-test" method="POST">
-                            <div class="input-groupm mb-3">
-                                <input readonly="readonly" type="text" id="test_name" name="test_name">
-                            </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Description</span>
-                                <input type="text" class="form-control" id="test_description" name="test_description">
-                            </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Sample Serial Number</span>
-                                <input type="text" class="form-control" id="serial_number" name="serial_number" required>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Sample Run Number</span>
-                                <input type="number" class="form-control" id="run_number" name="run_number" required>
-                                <button class="btn btn-success" type="button" onclick=update_run_number()>Update</button>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Date and Time</span>
-                                <input type="text" class="form-control" id="data_time" name="data_time" required>
-                                <button class="btn btn-success" type="button" onclick=update_date_time()>Update</button>
-                            </div>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text">Gauge Length</span>
-                                <input type="text" class="form-control" id="gauge_length" name="gauge_length" required>
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-text">Motion Profile</span>
-                                <select class="form-select" id="motion_profile" name="motion_profile" required>
-                                    <option selected>Choose...</option>
-                                    {% for profile in motion_profiles %}
-                                        <option value="{{ profile }}">{{ profile }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-                            <button type="button" class="btn btn-primary" id="generate-test">Queue Test</button>
-                        </form>
-                    </div>
-                    <div class="row-xl">
-                        <div class="col" id="functions">
-                        </div>
-                    </div>
+            {% endmacro %}
+            {% macro display_value(label,id) %}
+            <div class="row d-flex">
+                <div class="col">
+                    <h5>{{label}}</h5>
+                </div>
+                <div class="col ml-auto text-center">
+                    <span type="text" json-id="{{id}}" class="align-middle"></span>
                 </div>
             </div>
+            {% endmacro %}
+            {% macro display_button(label,id, func, class) %}
+            <div class="row d-flex">
+                <div class="col">
+                    <h5>{{label}}</h5>
+                </div>
+                <div class="col ml-auto">
+                    <button type="button" json-id="{{id}}" class="btn {{class}}" onclick={{func}}></button>
+                </div>
+            </div>
+            {% endmacro %}
+            {{display_header("Self check","selfCheckParameters")}}
+            {{display_boolean("Charge Pump","chargePump")}}
+
+            {{display_header("Machine Check","machineCheckParameters")}}
+            {{display_value("ESD Chain","esdChain")}}
+            {{display_boolean("Servo Ready","servoOK")}}
+            {{display_boolean("Force Comm","forceGaugeCom")}}
+            {{display_boolean("Servo Comm","servoCom")}}
+
+            {{display_header("Motion","motionParameters")}}
+            {{display_value("Status","status")}}
+            {{display_value("Condition","condition")}}
+            {{display_value("Mode","mode")}}
+            {{display_value("","Run")}}
         </div>
-        <div class="col-xl">
-            <div class="row-xl">
-                <div class="shadow p-3 mb-3 bg-white rounded">
-                    <div id="chart-tension" style="height: 500px; width:100%;"></div>
-                </div>
+        {{display_value("Force (N)","force_newtons")}}
+        {{display_value("Posiion (mm)","position_mm")}}
+    </div>
+    <div class="row container shadow p-3 mb-3 bg-white rounded">
+        <h3>Control</h3>
+        <button onclick=toggleStatus()>Toggle Status</button>
+        <button onclick=toggleMode()>Toggle Mode</button>
+        <button onclick=run()>Run Test</button>
+        <button onclick=set_gauge_length()>Zero Length</button>
+        <button onclick=set_gauge_force()>Zero Force</button>
+    </div>
+    <div class="row-xl shadow p-3 mb-3 bg-white rounded">
+        <h2>Setup Test</h2>
+        <form id="setup-test" method="POST">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Description</span>
+                <input type="text" class="form-control" id="test_description" name="test_description">
             </div>
-            <div class="row-xl">
-                <div class="shadow p-3 mb-3 bg-white rounded">
-                    <div id="chart-position" style="height: 370px; width:100%;"></div>
-                </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Sample Serial Number</span>
+                <input type="text" class="form-control" id="serial_number" name="serial_number" required>
             </div>
-            <div class="row-xl">
-                <div class="shadow p-3 mb-3 bg-white rounded">
-                    <div id="chart-force" style="height: 370px; width:100%;"></div>
-                </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Sample Run Number</span>
+                <input type="number" class="form-control" id="run_number" name="run_number" required>
+                <button class="btn btn-success" type="button" onclick=update_run_number()>Update</button>
             </div>
-            <div class="row-xl">
-                <div class="shadow p-3 mb-3 bg-white rounded">
-                    <h3 class="mt-5">Live Streaming</h3>
-                    <img src="{{ url_for('video_feed') }}" width="100%">
-                </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Date and Time</span>
+                <input type="text" class="form-control" id="data_time" name="data_time" required>
+                <button class="btn btn-success" type="button" onclick=update_date_time()>Update</button>
             </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Gauge Length</span>
+                <input type="text" class="form-control" id="gauge_length" name="gauge_length" required>
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Motion Profile</span>
+                <select class="form-select" id="motion_profile" name="motion_profile" required>
+                    <option selected>Choose...</option>
+                    {% for profile in motion_profiles %}
+                    <option value="{{ profile }}">{{ profile }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+            <div class="input-groupm mb-3">
+                <input readonly="readonly" type="text" id="test_name" name="test_name">
+            </div>
+            <button type="button" class="btn btn-primary" id="generate-test">Queue Test</button>
+        </form>
+    </div>
+    <div class="row-xl">
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <div id="chart-tension" style="height: 500px; width:100%;"></div>
+        </div>
+    </div>
+    <div class="row-xl">
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <div id="chart-position" style="height: 370px; width:100%;"></div>
+        </div>
+    </div>
+    <div class="row-xl">
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <div id="chart-force" style="height: 370px; width:100%;"></div>
+        </div>
+    </div>
+    <div class="row-xl">
+        <div class="shadow p-3 mb-3 bg-white rounded">
+            <h3 class="mt-5">Live Streaming</h3>
+            <img src="{{ url_for('video_feed') }}" width="100%">
         </div>
     </div>
 </div>
@@ -153,8 +137,8 @@
     var chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
         zoomEnabled: true,
-        title:{
-            text: "Preview" 
+        title: {
+            text: "Preview"
         },
         data: [{
             type: "line",
@@ -165,7 +149,7 @@
 
 
 
-    $('#serial_number').change(function() {
+    $('#serial_number').change(function () {
         var serial_number = $(this).val();
         console.log(serial_number);
         $.ajax({
@@ -174,7 +158,7 @@
             success: function (data_json) {
                 var data = JSON.parse(data_json);
                 console.log(data);
-                $('#run_number').val(parseInt(data)+1).trigger('change');
+                $('#run_number').val(parseInt(data) + 1).trigger('change');
             },
             error: function (error) {
                 console.log(error);
@@ -182,7 +166,7 @@
         });
     });
 
-    $('#serial_number, #run_number').change(function() {
+    $('#serial_number, #run_number').change(function () {
         var serial_number = $('#serial_number').val();
         var run_number = $('#run_number').val();
         // format testname to padd zeros to serial number and run number, ensure 4 digits then 3 digits
@@ -191,23 +175,23 @@
         var test_name = serial_number + "-" + run_number;
         $('#test_name').val(test_name);
     });
-    
-    $('#motion_profile').change(function() {
+
+    $('#motion_profile').change(function () {
         var selectedProfile = $(this).val();
         console.log(selectedProfile);
         $.ajax({
             url: "/gcode_file_to_moves",
             type: "post",
-            data: JSON.stringify({"filename": selectedProfile}),
+            data: JSON.stringify({ "filename": selectedProfile }),
             contentType: "application/json",
             success: function (data_json) {
                 cordinates = JSON.parse(data_json)
-                console.log(cordinates);       
+                console.log(cordinates);
                 chartData.length = 0; // clear array
                 for (var i = 0; i < cordinates.length; i += 1) {
                     chartData.push({
                         x: cordinates[i].X,
-                        y: cordinates[i].Y         
+                        y: cordinates[i].Y
                     });
                     //console.log("adding cord: ",cordinates[i].X, " ", cordinates[i].Y);
                 }
@@ -227,7 +211,7 @@
         dataTimeInput.value = formattedDateTime;
     };
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         update_date_time();
     });
     function update_boolean(id, value) {
@@ -272,7 +256,7 @@
             url: "/toggleStatus",
             type: "post",
             contentType: "application/json",
-            data: JSON.stringify({status: get_value("status")}),
+            data: JSON.stringify({ status: get_value("status") }),
             success: function (data) {
                 console.log("Toggling Status");
             },
@@ -287,7 +271,7 @@
             url: "/toggleMode",
             type: "post",
             contentType: "application/json",
-            data: JSON.stringify({mode: get_value("mode")}),
+            data: JSON.stringify({ mode: get_value("mode") }),
             success: function (data) {
                 console.log("Toggling Mode");
             },
@@ -328,68 +312,68 @@
     }
 
     $(document).ready(function () {
-        $('#generate-test').click(function() {
+        $('#generate-test').click(function () {
             $.ajax({
                 url: '/status/setup_test',
                 type: 'POST',
                 data: $('#setup-test').serialize(),
-                success: function(response) {
-                   alert(response);
+                success: function (response) {
+                    alert(response);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
         });
         var chartPositionData = []; // dataPoints
         var chartPosition = new CanvasJS.Chart("chart-position", {
-            
-            title :{
+
+            title: {
                 text: "Position"
             },
             data: [{
                 type: "line",
                 dataPoints: chartPositionData
             }],
-            axisX:{
+            axisX: {
                 gridThickness: 0,
                 tickLength: 0,
                 lineThickness: 0,
-                labelFormatter: function(){
-                return " ";
+                labelFormatter: function () {
+                    return " ";
                 }
             }
         });
 
         var chartForceData = []; // dataPoints
         var chartForce = new CanvasJS.Chart("chart-force", {
-            title :{
+            title: {
                 text: "Force"
             },
             data: [{
                 type: "line",
                 dataPoints: chartForceData
             }],
-            axisX:{
+            axisX: {
                 gridThickness: 0,
                 tickLength: 0,
                 lineThickness: 0,
-                labelFormatter: function(){
-                return " ";
+                labelFormatter: function () {
+                    return " ";
                 }
             }
         });
 
         var chartTensileData = []; // dataPoints
         var chartTensile = new CanvasJS.Chart("chart-tension", {
-            title :{
+            title: {
                 text: "Force Stretch"
             },
-            axisY:{
-                title:"N",
+            axisY: {
+                title: "N",
             },
-            axisX:{
-                title:"mm",
+            axisX: {
+                title: "mm",
             },
             data: [{
                 type: "line",
@@ -398,7 +382,7 @@
         });
 
         var socket = io('/serial');
-        var max = 1000;
+        var max = 500;
         socket.on('data', function (data) {
             if (!data) {
                 return;
@@ -406,25 +390,27 @@
             //console.log(data.json)
             var monitor = JSON.parse(data.json);
 
-            var time = monitor['Time']/1000000.0;
-            var positionmm = monitor['Position']/1000.0;
-            var force = monitor['Force']/1000.0;
-            var setpointmm = monitor['Setpoint']/1000.0;
+            var time = monitor['Time'] / 1000000.0;
+            var positionmm = monitor['Position'] / 1000.0;
+            var force = monitor['Force'] / 1000.0;
+            var setpointmm = monitor['Setpoint'] / 1000.0;
+            update_value('force_newtons',force);
+            update_value('position_mm',positionmm);
             //console.log(time, positionmm, force, setpointmm);
 
             chartPositionData.push({
-                    x: time,
-                    y: positionmm
-                });
+                x: time,
+                y: positionmm
+            });
             if (chartPositionData.length > max) {
                 chartPositionData.shift();
             }
             chartPosition.render();
 
             chartForceData.push({
-                    x: time,
-                    y: force
-                });
+                x: time,
+                y: force
+            });
             if (chartForceData.length > max) {
                 chartForceData.shift();
             }
@@ -444,12 +430,12 @@
         socket.on('state', function (data) {
             if (!data && !data.json) {
                 return;
-            } 
+            }
 
             json = JSON.parse(data.json);
-            
+
             state = json['State']
-            
+
             selfCheck = json['Self Check Parameters'];
             chargePump = selfCheck['Charge Pump'];
 
@@ -466,9 +452,9 @@
 
             update_header("selfCheckParameters", state != "SELF CHECK");
             update_boolean("chargePump", chargePump);
-        
+
             machineCheck = json.machineCheckParameters;
-            update_header("machineCheckParameters", state!="SELF CHECK"&&state!="MACHINE CHECK");
+            update_header("machineCheckParameters", state != "SELF CHECK" && state != "MACHINE CHECK");
             update_value("esdChain", esdChain);
             update_boolean("servoOK", servoOK);
             update_boolean("forceGaugeCom", forceGaugeCom);
@@ -478,7 +464,7 @@
             update_value("status", status);
             update_value("condition", condition);
             update_value("mode", mode);
- 
+
             //$(`[json-id="status"]`).prop('disabled', "2".localeCompare(json.state));
         });
     });

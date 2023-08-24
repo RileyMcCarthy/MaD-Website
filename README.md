@@ -38,6 +38,8 @@ make install
 
 This will install website dependencies for Flask and Javascript
 
+*** Note this can take a long time to install on RPI (few hours) ***
+
 # Install Website Docker
 
 You must have Docker installed!

@@ -5,7 +5,7 @@ ACTIVATE = $(VENV)/bin/activate
 STATIC = app/static
 GUNICORN = $(VENV)/bin/gunicorn
 
-.PHONY: production development clean
+.PHONY: production development clean static
 
 production:
 	$(GUNICORN) --worker-class eventlet -w 1 -b 0.0.0.0:5000 app:app
@@ -21,6 +21,8 @@ static:
 venvc: clean $(VENV)/bin/activate
 
 venv: $(VENV)/bin/activate
+	$(PYTHON) -m ensurepip --upgrade
+	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 
 $(VENV)/bin/activate: requirements.txt
