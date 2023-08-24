@@ -77,8 +77,8 @@ def gcode_file_to_moves():
 @app.route('/jog', methods=['POST'])
 def jog_machine():
     g = int(request.form['g'])
-    x = int(request.form['x'])
-    f = int(request.form['f'])
+    x = float(request.form['x'])
+    f = float(request.form['f'])
     command = {'G': g, 'X': x, 'F': f}
     print(command)
     communication.set_manual_command(command)

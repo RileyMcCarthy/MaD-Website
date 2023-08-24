@@ -13,6 +13,7 @@ RUN apt update && apt install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrende
 
 # Install npm
 RUN apt-get update && apt-get install -y nodejs npm
+RUN apt-get update && apt-get -y install cmake protobuf-compiler
 
 # Install cake for opencv
 RUN apt-get install cmake
