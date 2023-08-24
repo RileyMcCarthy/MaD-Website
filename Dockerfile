@@ -1,4 +1,4 @@
-FROM python:slim-bullseye
+FROM python:3.8-slim
 
 # Copy the current directory contents into the container at /app
 COPY ./app /var/www/app
