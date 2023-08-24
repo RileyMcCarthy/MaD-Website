@@ -59,6 +59,7 @@ def setup_test():
     serial_number = request.form.get('serial_number')
     motion_profile = request.form.get('motion_profile')
     gauge_length = request.form.get('gauge_length')
+    sample_width = request.form.get('sample_width')
 
     header = {
         'test_description': test_description,
@@ -67,7 +68,8 @@ def setup_test():
         'date_time': data_time,
         'sample_serial_number': serial_number,
         'motion_profile': motion_profile,
-        'gauge_length': gauge_length
+        'gauge_length': gauge_length,
+        'sample_width': sample_width
     }
 
     global last_serial_test_run_number
