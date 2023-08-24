@@ -32,7 +32,9 @@ If a version number is displayed NPM has been installed!
 
 Next inside the repo folder run:
 
-`make install'
+```
+make install
+```
 
 This will install website dependencies for Flask and Javascript
 
