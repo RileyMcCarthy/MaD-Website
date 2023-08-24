@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:slim-bullseye
 
 # Copy the current directory contents into the container at /app
 COPY ./app /var/www/app
@@ -19,6 +19,7 @@ RUN apt-get install cmake
 
 # Create Python Venv and Install Requirements
 RUN python3 -m venv venv
+RUN venv/bin/python -m ensurepip --upgrade
 RUN venv/bin/pip install --upgrade pip
 RUN venv/bin/pip install -r requirements.txt
 
