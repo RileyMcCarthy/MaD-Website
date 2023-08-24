@@ -1,7 +1,7 @@
 flask_socketio
 pyserial
-pylibmc
-eventlet
-Werkzeug
 numpy
 opencv-python
+opencv-contrib-python
+eventlet
+gunicorn

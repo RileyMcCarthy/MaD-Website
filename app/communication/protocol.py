@@ -16,7 +16,7 @@ def serial_init(port = "/dev/serial0", baud = 1000000):
     try:
         if serial is not None and serial.isOpen():
             serial.close()
-        print("Starting Serial on port: " + port + " with baud: "+ baud)
+        print("Starting Serial on port: " + port + " with baud: "+ str(baud))
         serial = Serial(port, baud, timeout=1, write_timeout=1,inter_byte_timeout=1)
         serial.reset_input_buffer()
         print("Serial connected using: " + serial.name)

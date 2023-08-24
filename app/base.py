@@ -7,12 +7,15 @@ import app.communication as communication
 from app.communication.commands import CMD_AWK, CMD_TESTDATA,CMD_TESTDATA_COUNT,CMD_STATE,CMD_DATA,CMD_MPROFILE,CMD_MOVE, CMD_NOTIFICATION, CMD_TEST_HEADER
 from collections.abc import MutableMapping
 from .helpers import flatten_dict
-from threading import Lock
+from threading import Lock, Event
 import re
 import time
 import csv
 from datetime import datetime
 import os
+import configparser
+
+reset_serial = Event()
 
 gcode_lock = Lock()
 gcode_ack = "NONE"
@@ -24,6 +27,9 @@ test_data_count = 0
 test_data_complete = False
 
 gcode_sender_thread_path = None
+
+def trigger_reset_serial():
+    reset_serial.set()
 
 def emit_notification(type, message, timeout = None):
     type = type.lower()
@@ -82,64 +88,82 @@ def ack_handler(data_json):
             emit_notification('error', 'Failed to setup test on device')
 
 
-def serial_thread(serial_port, serial_baud):
+def serial_thread():
     # Serial thread is responsible for reading the serial port and sending the data to the client
-    print('starting serial task')    
-    while not communication.start(serial_port, serial_baud):
-        emit_notification('warning', 'Failed to connect to device!', 4000)
-        socketio.sleep(5)
-    emit_notification('success', 'Connected to device!')
-    
+    global reset_serial
     while True:
-        socketio.sleep(0.01)
-        try:
-            res = communication.process_recieved()
-        except Exception as err:
-            app.logger.error("Failed to process incomming data: " + str(err))
-            continue
+        print('Starting Serial Thread')
+        reset_serial.clear()
+        data_period = 0.2
+        status_period = 0.5
+        serial_port = "/dev/serial0"
+        serial_baud = 115200
+        config = configparser.ConfigParser()
+        config_path = os.path.join(app.config['UPLOAD_FOLDER'], 'config.ini')
+        if not os.path.isfile(config_path):
+            emit_notification('warning', 'No config file found, using defaults!')
+            #create config file
+            config['DEFAULT'] = {'SERIAL_PORT': serial_port, 'SERIAL_BAUD': serial_baud, 'STATUS_RATE': status_period, 'DATA_RATE': data_period}
+            with open(config_path, 'w') as configfile:
+                config.write(configfile)
+        config.read(config_path)
+        if "SERIAL_PORT" in config['DEFAULT']:
+            serial_port = config['DEFAULT']['SERIAL_PORT']
+        if "SERIAL_BAUD" in config['DEFAULT']:
+            serial_baud = config['DEFAULT']['SERIAL_BAUD']
+        if "STATUS_RATE" in config['DEFAULT']:
+            status_period = float(config['DEFAULT']['STATUS_RATE'])
+        if "DATA_RATE" in config['DEFAULT']:
+            data_period = float(config['DEFAULT']['DATA_RATE'])
         
-        if res is None:
+        if not communication.start(serial_port, serial_baud):
+            emit_notification('warning', 'Failed to connect to device!', 4000)
+            socketio.sleep(5)
             continue
-
-        cmd, data_json = res
-        #print(f'got data: {data_json}')
-        if cmd == CMD_STATE:
-            socketio.emit('state', {'json': json.dumps(data_json)}, namespace = '/serial')
-        elif cmd == CMD_DATA:  
-            socketio.emit('data', {'json': json.dumps(data_json)}, namespace = '/serial')
-        elif cmd == CMD_MPROFILE:
-            socketio.emit('profile', {'json': json.dumps(data_json)}, namespace = '/serial')
-        elif cmd == CMD_AWK:
-            ack_handler(data_json)
-        elif cmd == CMD_TESTDATA:
-            global test_data_complete
-            global test_data
-            test_data_complete = data_json['Test_Data'] is None
-            test_data = data_json['Test_Data']
-            print('got test data of size ',len(test_data))
-        elif cmd == CMD_TESTDATA_COUNT:
-            #print('Recieving test data count: ', data.value)
-            global test_data_count
-            test_data_count = data_json['test_count']
-        elif cmd == CMD_NOTIFICATION:
-            print("Recieving notification: ", data_json)
-            emit_notification(data_json['Type'], data_json['Message'], 5000)
-
-def data_thread(period):
-    # Data thread is respondsible for sending the data request command to the serial port
-    print('starting data task')
-    while True:
-        #print('Sending data command')
-        communication.get_data()
-        socketio.sleep(period)
-
-def state_thread(period):
-    # State thread is respondsible for sending the state request command to the serial port
-    print('starting status task')
-    index = 0
-    while True:
-        communication.get_state()
-        socketio.sleep(period)
+        emit_notification('success', 'Connected to device!')
+        
+        # call communication.get_data() to get the current data every 0.5 seconds
+        next_data_time = time.time() + data_period
+        next_status_time = time.time() + status_period
+        while True:
+            socketio.sleep(0.01)
+            if reset_serial.is_set():
+                break
+            if time.time() > next_data_time:
+                next_data_time = time.time() + data_period
+                communication.get_data()
+            if time.time() > next_status_time:
+                next_status_time = time.time() + status_period
+                communication.get_state()
+            
+            try:
+                res = communication.process_recieved()
+            except Exception as err:
+                app.logger.error("Failed to process incomming data: " + str(err))
+                continue
+            if res is None:
+                continue
+            cmd, data_json = res
+            if cmd == CMD_STATE:
+                socketio.emit('state', {'json': json.dumps(data_json)}, namespace = '/serial')
+            elif cmd == CMD_DATA:  
+                socketio.emit('data', {'json': json.dumps(data_json)}, namespace = '/serial')
+            elif cmd == CMD_MPROFILE:
+                socketio.emit('profile', {'json': json.dumps(data_json)}, namespace = '/serial')
+            elif cmd == CMD_AWK:
+                ack_handler(data_json)
+            elif cmd == CMD_TESTDATA:
+                global test_data_complete
+                global test_data
+                test_data_complete = data_json['Test_Data'] is None
+                test_data = data_json['Test_Data']
+                print('got test data of size ',len(test_data))
+            elif cmd == CMD_TESTDATA_COUNT:
+                global test_data_count
+                test_data_count = data_json['test_count']
+            elif cmd == CMD_NOTIFICATION:
+                print("Recieving notification: ", data_json)
+                emit_notification(data_json['Type'], data_json['Message'], 5000)
 
 @socketio.on('profile', namespace='/serial')
 def serial_client_profile():
@@ -147,6 +171,10 @@ def serial_client_profile():
 
 @socketio.on('connect', namespace='/serial')
 def serial_client_connect():
+    pass
+
+@socketio.on('disconnect')
+def serial_client_disconnect():
     pass
 
 def test_data_reciever_thread():

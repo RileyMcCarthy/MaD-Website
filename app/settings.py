@@ -1,6 +1,5 @@
 from flask import render_template, request, jsonify, Response
 from .helpers import loadMachineProfile
-from werkzeug.datastructures import MultiDict
 from app import app, socketio
 import app.communication as communication
 from .helpers import flatten_dict, unflatten_dict
@@ -9,6 +8,13 @@ import json
 @app.route('/settings', methods=['GET'])
 def settings():
     return render_template('settings.html')
+
+#endpoint to set reset_serial flag from base.py
+@app.route('/settings/reset', methods=['POST'])
+def settings_reset_serial():
+    from base import trigger_reset_serial
+    trigger_reset_serial()
+
 
 @app.route('/settings', methods=['POST'])
 def settings_save():

@@ -1,6 +1,5 @@
 from app import app, socketio, ALLOWED_EXTENSIONS
 from flask import render_template, request, jsonify, Response, flash, redirect, url_for
-from werkzeug.utils import secure_filename
 from .base import gcode_sender_thread, gcode_to_dict
 import app.communication as communication
 import os

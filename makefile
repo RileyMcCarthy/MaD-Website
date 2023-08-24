@@ -3,12 +3,15 @@ PYTHON = $(VENV)/bin/python3
 PIP = $(VENV)/bin/pip
 ACTIVATE = $(VENV)/bin/activate
 STATIC = app/static
+GUNICORN = $(VENV)/bin/gunicorn
 
-.PHONY: run clean
+.PHONY: production development clean
 
-run:
+production:
+	$(GUNICORN) --worker-class eventlet -w 1 -b 0.0.0.0:5000 app:app
+
+development:
 	$(PYTHON) MaD.py
-	#. $(ACTIVATE); export FLASK_APP=MaD.py; flask run --host=0.0.0.0
 
 install: static venv
 
@@ -22,7 +25,6 @@ venv: $(VENV)/bin/activate
 
 $(VENV)/bin/activate: requirements.txt
 	python3 -m venv $(VENV)
-	$(PIP) install -r requirements.txt
 
 clean:
 	rm -rf $(VENV)

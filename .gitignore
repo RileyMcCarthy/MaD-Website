@@ -3,3 +3,5 @@ error.log
 uploads/profiles/
 uploads/tests/
 app/static/package-lock.json
+venv
+**__pycache__**

@@ -13,10 +13,19 @@
         </div>
         <p id="loading">Loading</p>
     </div>
+    <button id="resetButton">Reset</button>
 </div>
 
 <script>
+const resetButton = document.getElementById('resetButton');
 
+resetButton.addEventListener('click', () => {
+    // Make a request to the Flask endpoint using fetch
+    fetch('/settings/reset', {
+        method: 'POST'
+        // You can add headers, body, and other options as needed
+    })
+});
 // Function to generate the form
 function generateForm(data, parentKey = '') {
     var formContainer = document.getElementById('formContainer');
