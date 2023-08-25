@@ -1,0 +1,9 @@
+services:
+  flask-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "0.0.0.0:5005:5000"
+    volumes:
+      - /Users/rileymccarthy/Documents/MaD-Website/static:/var/www/app/uploads

@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.9-slim
 
 # Copy the current directory contents into the container at /app
 COPY ./app /var/www/app
