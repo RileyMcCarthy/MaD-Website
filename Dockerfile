@@ -12,12 +12,9 @@ VOLUME ["/var/www/app/uploads"]
 RUN apt update && apt install -y libsm6 libxext6 ffmpeg libfontconfig1 libxrender1 libgl1-mesa-glx
 
 # Install npm
-RUN apt-get update && apt-get install -y nodejs npm
-RUN apt-get update && apt-get -y install cmake protobuf-compiler
-
-# Install cmake for opencv
-RUN apt-get install cmake
-
+RUN apt-get update && apt-get install -y nodejs npm protobuf-compiler
+RUN apt-get install build-essential cmake pkg-config libjpeg-dev libtiff5-dev libjasper-dev libpng-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libfontconfig1-dev libcairo2-dev libgdk-pixbuf2.0-dev libpango1.0-dev libgtk2.0-dev libgtk-3-dev libatlas-base-dev gfortran libhdf5-dev libhdf5-serial-dev libhdf5-103 python3-pyqt5 python3-dev -y
+RUN apt-get install python-opencv
 # Create Python Venv and Install Requirements
 RUN python3 -m venv venv
 RUN venv/bin/python -m ensurepip --upgrade
