@@ -21,7 +21,7 @@ RUN apt-get install cmake
 # Create Python Venv and Install Requirements
 RUN python3 -m venv venv
 RUN venv/bin/python -m ensurepip --upgrade
-RUN venv/bin/pip install --upgrade pip
+RUN venv/bin/pip install --upgrade pip setuptools wheel
 RUN venv/bin/pip install -r requirements.txt
 
 # Install Javascript Packages
