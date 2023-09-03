@@ -1,6 +1,6 @@
 flask_socketio~=5.3.0
 pyserial~=3.5
 numpy~=1.25.0
-opencv-python~=3.4.18.0
+opencv-python>=3.4.18.0
 eventlet~=0.33.0
 gunicorn~=21.2.0
