@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y nodejs npm
 
 # Install OpenCV
 RUN apt-get update && apt-get -y install cmake protobuf-compiler
-RUN apt-get install python-opencv
+RUN apt-get install python3-opencv
 
 # Create Python Venv and Install Requirements
 RUN python3 -m venv venv
