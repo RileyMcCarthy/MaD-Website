@@ -19,7 +19,7 @@ RUN apt-get update && apt-get -y install cmake protobuf-compiler
 RUN apt-get install -y python3-opencv
 
 # Create Python Venv and Install Requirements
-RUN python3 -m venv venv
+RUN python3 -m venv venv --system-site-packages
 RUN venv/bin/python -m ensurepip --upgrade
 RUN venv/bin/pip install --upgrade pip setuptools wheel
 RUN venv/bin/pip install -r requirements.txt
