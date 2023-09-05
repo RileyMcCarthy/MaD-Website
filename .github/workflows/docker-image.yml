@@ -8,7 +8,7 @@ on:
   workflow_dispatch:  # Manual workflow run trigger
     inputs:
       release_number:
-        description: 'Release Docker image tag (e.g. v1.0.0)'
+        description: 'Release Docker image tag (e.g. 1.0.0)'
         required: true
 
 jobs:

@@ -18,11 +18,10 @@ RUN apt-get update && apt-get install -y nodejs npm
 RUN apt-get update && apt-get -y install cmake protobuf-compiler
 RUN apt-get install -y python3-opencv
 
-# Create Python Venv and Install Requirements
-RUN python3 -m venv venv --system-site-packages
-RUN venv/bin/python -m ensurepip --upgrade
-RUN venv/bin/pip install --upgrade pip setuptools wheel
-RUN venv/bin/pip install -r requirements.txt
+# Upgrade Pip and Install Requirements
+RUN python3 -m ensurepip --upgrade
+RUN python3 -m pip install --upgrade pip setuptools wheel
+RUN python3 -m pip install -r requirements.txt
 
 # Install Javascript Packages
 WORKDIR /var/www/app/static
@@ -31,5 +30,5 @@ RUN npm install
 WORKDIR /var/www
 
 # Run the production version of the web app
-CMD venv/bin/gunicorn --worker-class eventlet -w 1 -b 0.0.0.0:5000 app:app
+CMD python3 -m gunicorn --worker-class eventlet -w 1 -b 0.0.0.0:5000 app:app
 EXPOSE 5000
