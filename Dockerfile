@@ -10,8 +10,12 @@ WORKDIR /var/www
 VOLUME ["/var/www/app/uploads"]
 
 # Install npm
-RUN apt update
+RUN apt-get update
 RUN apt-get install -y nodejs npm
+
+# Install OpenCV using apt-get
+RUN apt-get install -y python3-opencv
+ENV PYTHONPATH=/usr/lib/python3/dist-packages:$PYTHONPATH
 
 # Upgrade Pip and Install Requirements
 RUN python -m pip install -r requirements.txt
