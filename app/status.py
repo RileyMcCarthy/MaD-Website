@@ -4,7 +4,7 @@ import json
 from app import app, socketio
 from .helpers import flatten_dict, unflatten_dict
 import app.communication as communication
-import cv2
+#import cv2
 import os
 from .base import gcode_sender_thread, gcode_to_dict, emit_notification, generate_gcode_from_profile, set_gcode_sender_thread_path
 
