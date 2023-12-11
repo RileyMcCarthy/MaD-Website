@@ -8,7 +8,7 @@ GUNICORN = $(VENV)/bin/gunicorn
 .PHONY: production development clean static
 
 production:
-	$(GUNICORN) --worker-class eventlet -w 1 -b 0.0.0.0:5000 app:app
+	$(GUNICORN) --worker-class eventlet -w 1 -b 0.0.0.0:5001 app:app
 
 development:
 	$(PYTHON) MaD.py

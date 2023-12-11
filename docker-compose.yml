@@ -4,6 +4,6 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "0.0.0.0:5005:5000"
+      - "0.0.0.0:5004:5000"
     volumes:
       - /Users/rileymccarthy/Documents/MaD-Website/static:/var/www/app/uploads

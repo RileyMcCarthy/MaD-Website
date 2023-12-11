@@ -117,6 +117,7 @@ def serial_thread():
             data_period = float(config['DEFAULT']['DATA_RATE'])
         
         if not communication.start(serial_port, serial_baud):
+            print('Failed to connect to device!')
             emit_notification('warning', 'Failed to connect to device!', 4000)
             socketio.sleep(5)
             continue
