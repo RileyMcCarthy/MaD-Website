@@ -87,6 +87,14 @@ def ack_handler(data_json):
         elif data_json['awk'] == "FAIL":
             emit_notification('error', 'Failed to setup test on device')
 
+def serial_connect(port, baud):
+    if not communication.start(port, baud):
+        print('Failed to connect to device!')
+        emit_notification('warning', 'Failed to connect to device!', 4000)
+        return False
+    else:
+        emit_notification('success', 'Connected to device!')
+        return True
 
 def serial_thread():
     # Serial thread is responsible for reading the serial port and sending the data to the client
@@ -115,12 +123,15 @@ def serial_thread():
             status_period = float(config['DEFAULT']['STATUS_RATE'])
         if "DATA_RATE" in config['DEFAULT']:
             data_period = float(config['DEFAULT']['DATA_RATE'])
-        
-        if not communication.start(serial_port, serial_baud):
-            print('Failed to connect to device!')
-            emit_notification('warning', 'Failed to connect to device!', 4000)
-            socketio.sleep(5)
-            continue
+        while True:
+            if (serial_connect(serial_port, serial_baud)):
+                break
+            if reset_serial.is_set():
+                break
+            socketio.sleep(0.1)
+
+        if reset_serial.is_set():
+                break
         emit_notification('success', 'Connected to device!')
         
         # call communication.get_data() to get the current data every 0.5 seconds
@@ -128,6 +139,7 @@ def serial_thread():
         next_status_time = time.time() + status_period
         while True:
             socketio.sleep(0.01)
+            
             if reset_serial.is_set():
                 break
             if time.time() > next_data_time:
